@@ -1,0 +1,35 @@
+---
+title: "Assignment 3"
+author: "Abigail Beasley & Cole Harris"
+date: "2025-03-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load libraries}
+library(tidyverse)
+library(pastecs)
+
+```
+
+```{r load data}
+texts = read.csv('TextMessages.csv')
+```
+
+```{r plot 1}
+
+
+```
+
+```{r plot 2}
+
+
+```
+
+```{r descriptive stats}
+
+
+```
