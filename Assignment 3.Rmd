@@ -17,19 +17,33 @@ library(pastecs)
 
 ```{r load data}
 texts = read.csv('TextMessages.csv')
+
+```
+
+```{r}
+texts$Group <- as.factor(texts$Group)
+
+texts_long <- pivot_longer(texts,
+                           cols = c(Baseline, Six_months),
+                           names_to = 'time',
+                           values_to = 'text_count')
 ```
 
 ```{r plot 1}
 
-
 ```
 
 ```{r plot 2}
+# Creates stratified bar charts of text messages Group and Time (Hint: Faceted Bar Charts).
+baseline_barchart <- ggplot(texts_long, aes(x=time, y=text_count)) +
+  geom_bar(stat = "summary", fun = "sum", fill ='lightblue',color='black') +
+  labs(title='Text totals by Group and Time', y='Total Texts', x='Time') +
+  theme_minimal() +
+  facet_wrap(~Group)
 
-
+baseline_barchart
 ```
 
 ```{r descriptive stats}
-
 
 ```
