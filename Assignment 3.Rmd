@@ -30,6 +30,14 @@ texts_long <- pivot_longer(texts,
 ```
 
 ```{r plot 1}
+#Creates a faceted boxplot of text messages by Group and Time (Hint: Faceted Boxplot)
+boxplot_texts <- ggplot(texts_long, aes (x = Group, y = text_count, fill = Group))
+#Adding a boxplot with labels:
+geom_boxplot() + labs(title = "Distribution of Text Messages by Group and Time"' 
+  y= "Text Count", x = "Group") +
+#Adding a theme to make more visually appealing data:
+theme_minimal() + facet_wrap(~time) + scale_fill_manual(values = c("lightblue", "lightgreen")
+
 
 ```
 
