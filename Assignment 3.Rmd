@@ -59,5 +59,7 @@ baseline_barchart
 ```
 
 ```{r descriptive stats}
+#Creates summary statistics of Text Messages by Group and Time:
+
 
 ```
