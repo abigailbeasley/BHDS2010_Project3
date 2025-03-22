@@ -1,0 +1,399 @@
+#Setting the working directory
+setwd("C:/Users/colej/OneDrive/Desktop/Statistical Programming for Health Data Science")
+
+#Installing and loading the necessary packages:
+install.packages("pastecs")
+install.packages("ggplot2")
+install.packages("Hmisc")
+install.packages("dplyr")
+install.packages("car")
+install.packages("tidyverse")
+
+library(pastecs)
+library(ggplot2)
+library(Hmisc)
+library(dplyr)
+library(car)
+library(tidyr)
+
+#Creating a data frame following the instructions provided.
+subject_data <- data.frame(
+  Record = 1:20,
+  Age.Group = rep(c("18-35", "65-80"), each = 10),
+  BSI.Total = c(68, 61, 112, 61, 111, 131, 94, 59, 87, 96, 
+                49, 52, 76, 44, 56, 30, 59, 18, 44, 25),
+  Sig.Scale = c(7, 5, 7, 6, 8, 7, 7, 3, 4, 7, 7, 4, 5, 3, 2, 1, 
+                4, -1, 5, 2))
+
+#Using the print() function to view the data.
+print(subject_data)
+#The coded data is compared to the Midterm Instructions to make sure data
+#matches.
+#Although a unique identifier is added in RStudio, the Record section is kept
+#from the original data frame in case of merging datasets, tracking individual
+#participants, or conducting other functions
+
+#Converting negative one value into an NA value.
+subject_data <- subject_data %>% mutate(Sig.Scale = na_if(Sig.Scale, -1))
+
+#Viewing data after creating NA placeholder for -1:
+print(subject_data)
+
+#Calculating the mean, variance, and standard deviation for BIS.Total and
+#Sig.Scale for both age groups.
+round(stat.desc(subset(subject_data, Age.Group == "18-35", select = 
+                   c(BSI.Total, Sig.Scale))), 2)
+
+round(stat.desc(na.omit(subset(subject_data, Age.Group == "65-80", select = 
+                         c(BSI.Total, Sig.Scale)))), 2)
+#Using the subset function, the mean, variance, and standard deviation for
+#BIS.Total and Sig.Scale for each age group. In terms of means, the result is
+#88.00 (BSI.Total) and 6.10 (Sig.Scale) for 18-35 with 45.3 (BSI.Total) and 3.67
+#(Sig.Scale) for 65-80. Obviously, the age group 18-35 has means nearly double
+#that of the age group 65-80 for both BSI.Total and Sig.Scale. For variance, the
+#age group of 18-35 has values of 639.33 (BSI.Total) and 2.54 (Sig.Scale) while
+#the age group of 65-80 has values of 233.75 (BSI.Total) and 3.50 (Sig.Scale).
+#Lastly, the 18-35 age group has standard deviations of 25.29 (BSI.Total) and
+#1.60 (Sig.Scale) while the standard deviations of the 65-80 group is 15.29
+#(BSI.Total) and 1.87 (Sig.Scale). These values indicate several things: the
+#younger age group (18-35) has higher average BSI.Total and Sig.Scale scores;
+#the data for BSI.Total is more varied in the 18-35 age group and Sig.Scale
+#is more varied in the older group; and the data is further spread away from the
+#mean in BSI scores for the younger age group while the older age group has more
+#spread out data for Sig scores.
+
+#Graphing bar plots of mean BSI and Sig scores across age groups:
+
+#Creating an object to store BSI.Total and Age.Group ggplot function in.
+barwitherrorBSI_subjectdata <- ggplot(subject_data, 
+                                aes(Age.Group, BSI.Total))
+
+#Creating a bar chart displaying the differences between means for BSI.Total by
+#Age.Group. The maximum value is 131 and the minimum value is 18.00.
+barwitherrorBSI_subjectdata + stat_summary(fun.y = mean, 
+  geom = "bar", fill = "yellow", colour = "Black") + stat_summary(fun.data =
+  mean_cl_normal, geom = "pointrange", colour = "red") + labs(x = "Age Group",
+  y = "BSI Total") + ggtitle("Mean BSI Score of each Age Group") + 
+  scale_y_continuous(limits = c(0, 140), breaks = seq(from =0, to = 140, by = 
+  10))
+#Based on the bar graph created, the first key observation is that the younger
+#age group (18-35) has a higher mean BSI score compared to the older age group
+#(65-80). The error bars present at the top of each group represent the
+#confidence intervals of each mean BSI Total. The younger group has a wider
+#error bar, indicating that there is greater variability in their scores. The
+#older group has a smaller error bar, suggesting less variability in their BSI
+#Total scores. Lastly, if the error bars overlap, the difference between means
+#may not be statistically significant and require more testing. In this case,
+#the error bars do not overlap, implying that there is a statistically
+#significant difference in the mean BSI Total scores between the younger age
+#group (18-35) and the older age group (65-80). However, this should be
+#confirmed by additional statistical testing such as a two-sample independent
+#t-test.
+
+#Creating an object to store Sig.Scale and Age.Group ggplot function in. 
+barwitherrorSig_subjectdata <- ggplot(subject_data, 
+                                      aes(Age.Group, Sig.Scale))
+
+#Creating a bar chart displaying the differences between means for Sig.Scale by
+#Age.Group. Maximum value is 8.00 and the minimum value is 1.00 (excluding NA
+#value).
+barwitherrorSig_subjectdata + stat_summary(fun.y = mean, 
+  geom = "bar", fill = "green", colour = "black", na.rm = TRUE) + 
+  stat_summary(fun.data = mean_cl_normal, geom = "pointrange", colour = 
+  "blue", na.rm = TRUE) + labs(x = "Age Group", y = "Sig Scale") + 
+  ggtitle("Mean Sig Score of each Age Group") +
+  scale_y_continuous(limits = c(0, 10), breaks = seq(from =0, to = 10, by
+  = 2))
+#na.rm = TRUE is used to remove the NA value before plotting.
+#Similar to previous bar graph, the mean Sig Scale score is higher for the age
+#group 18-35 compared to the 65-80 age group. This difference in mean suggests
+#that younger individuals may have factors that increase their Sig score. Again,
+#the error bars are utilized to display the confidence interval of the means.
+#Furthermore, the error bar for the 18-35 age group is slightly smaller than the
+#65-80 age group. The smaller error bar for the younger age group indicates
+#there is less variability in their scores. The wider/larger error bar for the
+#65-80 age group suggests that there is more variability in their mean Sig Scale
+#scores. In this case, the error bars appear to slightly overlap. Overlapping
+#errors bars imply that there may not be a statistically significant difference
+#in Sig Scale scores between age groups 18-35 and 65-80. Statistical tests such
+#as a t-test or ANOVA should be performed to determine whether there the
+#difference is significant. However, it should be noted that the overlap is
+#extremely small, suggesting there is likely a significant difference between
+#mean Sig score and age group, which should be further investigated with
+#additional testing.
+
+#Creating histograms of the differences between rows:
+
+#Calculating differences between each row.
+BSI_difference <- subject_data$BSI.Total[1:10] - subject_data$BSI.Total[11:20]
+Sig_difference <- subject_data$Sig.Scale[1:10] - subject_data$Sig.Scale[11:20]
+
+#Omitting NA values for Sig scores:
+Sig_difference <- na.omit(Sig_difference)
+
+#Assigning objects to store the calculated differences between each row.
+BSI_data <- data.frame(difference = BSI_difference, type = "BSI.Total")
+Sig_data <- data.frame(difference = Sig_difference, type = "Sig.Scale")
+
+#Creating an object to store the histogram of calculated row differences for
+#BSI.Total.
+histogram_BSIbyAge <- ggplot(BSI_data, aes(x = difference))
+
+#Histogram for BSI.Total differences.
+histogram_BSIbyAge + geom_histogram(aes(color = type, fill = type),
+  position = "identity", bins = 10, alpha = 0.4) + scale_color_manual(values = 
+  c("purple4")) + scale_fill_manual(values = c("bisque")) +
+  ggtitle("BSI Differences between Age Groups") + 
+  labs(x = "Difference in BSI Total", y = "Frequency")
+#Histograms are plots that allow for visualization of the frequency distribution
+#for a set of data. In this plot, the difference between rows is being analyzed.
+#Generally, the bars are above zero, meaning that BSI scores tend to be higher
+#for younger individuals in this sample. Furthermore, this idea implies that
+#there may be a decrease in BSI score as age increases. The considerable
+#difference between BSI scores of the two age groups shows a large amount of
+#variability in the histogram with some differences being much larger than
+#others. The shape of the plot is slightly right-skewed, implying most of the
+#differences in BSI score are moderate with a few higher BSI differences. Since
+#most differences are positive (specifically above zero), the expected
+#independent t-test would show a significant difference, concluding that BSI
+#scores are higher in younger individuals.
+
+#Creating an object to store the histogram plot of calculated row differences
+#for Sig.Scale.
+histogram_SigbyAge <- ggplot(Sig_data, aes(x = difference))
+
+
+#Histogram for Sig.Scale differences.
+histogram_SigbyAge + geom_histogram(aes(color = type, fill = type),
+  position = "identity", bins = 10, alpha = 0.4) + scale_color_manual(values = 
+  c("black")) + scale_fill_manual(values = c("violet")) +
+  ggtitle("Sig Differences between Age Groups") + 
+  labs(x = "Difference in Sig Total", y = "Frequency")
+#Similar to the previous histogram, the majority of differences in Sig scores
+#are positive, meaning that the younger group tends to have higher Sig scores
+#compared to the older group. The pattern of varied scores is identified again
+#in this plot with the value of differences ranging from 0 to 5. This range
+#indicates that some patients had small differences (or no difference) while
+#others had larger differences. Comparatively, the spread is less extreme to BSI
+#differences, which suggests that the difference in Sig scores may have less
+#variability. Although the variability may be less in Sig scores, the spread of
+#the data has gaps and does not appear entirely symmetrical, characteristics of
+#non-normal data; however, this does not mean the data is non-normal. Lastly, if
+#a t-test were performed, the expected outcome would show that the younger
+#individuals have significantly higher Sig Scale scores than older individuals.
+
+#Conducting a Shapiro-Wilk test to determine if the differences in BSI totals
+#and Sig scores are normally distributed.
+shapiro.test(BSI_difference)
+
+shapiro.test(Sig_difference)
+#The above Shapiro-Wilk test result in a calculated p-value of 0.4095 for BSI
+#differences and 0.5611 for Sig differences. These p-values are both greater
+#than 0.05, suggesting that both distributions follow an approximately normal
+#pattern, thus failing to reject the null hypothesis. How does this relate to
+#the histograms? The two histograms do have slight deviations from expected
+#normal data: BSI difference has somewhat right-skewed data while Sig difference
+#has noticeable gaps creating a slightly irregular spread of data. However, the
+#sample sizes are small with limited data meaning that extreme values will have
+#a greater "pull" on the data and create these small deviations from symmetrical
+#data. Normally distributed data is required to utilize test such as the t-test
+#to determine if there is a significant difference between the two age groups.
+
+
+#Preparing the data for a t-test, completing assumptions of normality and
+#constant variance:
+
+#Filtering the data into age groups to run statistical tests.
+bsidata_18_35 <- filter(subject_data, Age.Group == "18-35")$BSI.Total
+bsidata_65_80 <- filter(subject_data, Age.Group == "65-80")$BSI.Total
+
+sigdata_18_35 <- filter(subject_data, Age.Group == "18-35")$Sig.Scale
+sigdata_65_80 <- filter(subject_data, Age.Group == "65-80")$Sig.Scale
+
+#Testing for normality using the Shapiro-Wilk test:
+shapiro.test(bsidata_18_35)
+shapiro.test(bsidata_65_80)
+
+shapiro.test(sigdata_18_35)
+shapiro.test(na.omit(sigdata_65_80))
+#The Shapiro-Wilk test is utilized to determine the normality of data. In this
+#case, for both BSI.Total and Sig.Scale, each age group is being tested. The
+#outputted p-values are as follows: 0.3098 for 18-35 group under BSI.Total,
+#0.9105 for 65-80 group under BSI.Total, 0.05513 in the 18-35 group for
+#Sig.Scale, and 0.8356 in the 65-80 group for Sig.Scale. Each p-value is greater
+#than 0.05, indicating that we fail to reject the null hypothesis and assume
+#the data is normally distributed. Interestingly, for the age group 18-35 under
+#Sig.Scale, p-value comes close to being less than 0.05.
+
+#Testing for homogeneity of variance using Levene's Test:
+leveneTest(subject_data$BSI.Total, subject_data$Age.Group)
+
+#Filtering out NA value to run Levene Test on Sig scores:
+subject_data_filtered <- subject_data %>% filter(!is.na(Sig.Scale))
+#Not filtering out scores will produce an error message and prevent the Levene
+#Test from being ran.
+
+leveneTest(subject_data_filtered$Sig.Scale, subject_data_filtered$Age.Group)
+#The Levene test is designed to determine the homogeneity of variance. In order
+#to run an independent two-sample t-test, equal variance must be met, and if
+#equal variance is violated, a different statistical test such as Welch's t-test
+#will be performed. In this case, the Levene test outputs a p-value of 0.1602
+#for BSI.Total and 0.5743 for Sig.Scale. Both of these p-values are greater than
+#0.05, therefore, we fail to reject the null hypothesis and assume that variance
+#is equal across both groups.
+
+
+#Conducting independent two-sample t-test for both BSI.Total and Sig.Scale:
+
+#Converting to a wide format:
+BSI_wide <- unstack(subject_data, BSI.Total ~ Age.Group)
+
+Sig_wide <- unstack(subject_data, Sig.Scale ~ Age.Group)
+
+#Combine the unstacked data into a single data frame:
+subject_data_wide <- data.frame(Record = 1:nrow(BSI_wide), BSI_wide, Sig_wide)
+
+#Creating column names to match new format:
+colnames(subject_data_wide) <- c("Record", "BSI.Total_18-35", "BSI.Total_65-80",
+                                 "Sig.Scale_18-35", "Sig.Scale_65-80")
+
+#Removing rows where NA values are present:
+subject_data_wide <- na.omit(subject_data_wide)
+
+#Printing wide dataset to view it:
+print(subject_data_wide)
+
+#After meeting the assumptions for normality and variance, a two-sample
+#independent t-test can be conducted. This statistical test compares the means
+#of two unrelated groups to determine in there is a significance difference. In
+#this dataset, the t-test is comparing the means of BSI.Total and Sig.Scale
+#across the two age groups. The p-value of this t-test will determine whether we
+#reject or fail to reject the null hypothesis. The null hypothesis states that
+#there is no difference between the means of the two groups (samples). The
+#alternative hypothesis is that there is a significant difference between the
+#means of two groups.
+
+#Running the t-test for BSI.Total:
+t.test(subject_data_wide$`BSI.Total_18-35`, subject_data_wide$`BSI.Total_65-80`, 
+       var.equal= TRUE, paired = FALSE)
+#The resulting p-value from the above code is 0.0004036 which is less than 0.05.
+#Therefore, we reject the null hypothesis at the 0.05 significance level. The
+#small p-value determines that there is a statistically significant difference
+#in mean BSI score between the age groups 18-35 and 65-80. This result
+#suggests that younger individuals tend to have higher BSI scores than
+#older individuals.
+
+#Running the t-test for Sig.Scale:
+t.test(subject_data_wide$`Sig.Scale_18-35`, subject_data_wide$`Sig.Scale_65-80`, 
+       var.equal= TRUE, paired = FALSE)
+#In the case of Sig.Scale, the t-test outputs a p-value of 0.001876. At the 0.05
+#significance level, we reject the null hypothesis as the p-value is small.
+#These result indicate that there is a statistically significant difference in
+#the mean Sig score between younger and older age groups. Similar to the
+#BSI.Total t-test, younger individuals tend to have higher Sig scores than
+#older individuals.
+
+
+#Hypothetical scenario: Following the patients for an extended time such that
+#those in age group 18-35 would eventually progress to age group 65-80 (i.e.
+#same patients as they grow older).
+t.test(subject_data_wide$`BSI.Total_18-35`, subject_data_wide$`BSI.Total_65-80`, 
+       paired = TRUE)
+#Similar to the independent two-sample t-test, the null hypothesis for a paired
+#t-test states that there is no difference in paired means. The alternative
+#hypothesis states there is a difference in paired means. The resulting p-value
+#is 0.002259, indicating that at the 0.05 significance level, we reject the null
+#hypothesis. Rejecting the null hypothesis implies that there is a significant
+#difference in the paired means of the two age age groups. Therefore, as
+#individuals age from groups 18-35 to 65-80, their BSI score decreased with age.
+
+
+#Discussion:
+
+#In this code, multiple key statistical tests were ran to determine the
+#significance between age and BSI or Sig score. The first test was determining
+#the mean, variance, and standard deviation of BSI and Sig scores for both
+#groups. The calculations show that the younger age group had higher values for
+#the mean, variation, and standard deviation of BSI scores; a higher mean Sig
+#score; and lower variability and standard deviation in Sig scores. The
+#calculated values are as follows: for means, 88.00 (BSI) and 6.10 (Sig) in
+#18-35 group while the 65-80 group had 48.33 (BSI) and 3.67 (Sig); for variance,
+#the 18-35 age group had values 639.33 (BSI) and 2.54 (Sig) while the 65-80 had
+#values 233.75 (BSI) and 3.50 (Sig); and for standard deviation, the 18-35 age
+#group had 25.29 (BSI) and 1.60 (Sig) with the 65-80 age group having 15.29
+#(BSI) and 1.87 (Sig). These values indicate several important notes: on average
+#the 18-35 age group had higher scores for both BSI and Sig, greater variability
+#and spread of data in the younger group for BSI scores, and that the older
+#group has larger variability and spread from the mean in the Sig scores.
+
+#The next statistical analysis included creating bar graphs of BSI and Sig
+#means for each age group. In both cases, error bars were superimposed on the
+#bar plots to represent the 95% confidence intervals. Visually, both bar charts
+#demonstrate that the younger group had a larger mean for BSI and Sig scores.
+#Moreover, the error bars aid in ascertaining if there is a significant
+#difference in mean scores between the two age groups. The first graph (BSI
+#scores) shows error bars that do not overlap. Error bars that do not overlap,
+#indicate that there is a significant difference between mean BSI scores for the
+#two age groups, Interestingly, as noted earlier, the second bar graph of Sig
+#scores shows minor overlapping. The overlapping does not cover much of either
+#bar and suggests that there is likely a significant difference between mean
+#Sig score and age group, but it should be investigated further with additional
+#testing. 
+
+#The next and final plot analysis was creating histograms showing the
+#differences between rows (e.g row 1 - row 11 for BSI score). With these
+#histograms, a Shapiro-Wilk test was done to determine normality of the
+#distributions. Graphically, both plots do not not look symmetrical, but the
+#data is not largely skewed or asymmetrical either. The histogram of BSI scores
+#shows minor right skewness largely due to a few extreme values, but the data
+#has no other non-normal characteristics. In the instance of Sig score, there
+#are gaps within the spread of data and asymmetry. In both graphs, a
+#corresponding t-test would be expected to indicate that younger individuals
+#have higher BSI and Sig scores. Moving to the Shapiro-Wilk test, both sets of
+#data had p-values larger than 0.05 (BSI: 0.4095, Sig: 0.5611). The null
+#hypothesis of a Shapiro-Wilk test states that the data is normally distributed
+#while the alternative states the data is not normal. Since both p-values are
+#larger than 0.05, we fail to reject the null hypothesis and conclude that the
+#difference in rows for BSI and Sig score are normally distributed.
+
+#The second to last statistical test is conducting a two-sample independent
+#t-test on the mean BSI and Sig scores across each age group. To conduct this
+#test, the normality and variance of the sample must be tested. If normality
+#and variance are not met, a different statistical test must be used instead of
+#the two-sample independent t-test (e.g. Welch's t-test). Similar to the
+#histograms, the Shapiro-Wilk test is utilized to assess normality of each age
+#group: for BSI scores, 0.3098 (18-35) and 0.9105 (65-80); for Sig scores,
+#0.05513 (18-35) and 0.8356 (65-80). Each of these scores is greater than 0.05,
+#thus we fail to reject the null hypothesis for each group and assume samples
+#are normally distributed. Next, the Levene test is used to determine the
+#homogeneity of variances. The hypotheses in this case are as follows: the null
+#hypothesis states that variance is constant and the alternative states that
+#variance is not constant. The calculated p-values result in a p-value of 0.1602
+#for BSI scores and a p-value of 0.5743 for Sig scores. Since both of these
+#p-values are greater 0.05, we fail to reject the null hypothesis and conclude
+#that variance is constant is this data set. Now, that the assumptions have been
+#met, a two-sample independent t-test can be conducted. The null hypothesis
+#states that there is no difference between the means (difference equals 0)
+#while the alternative hypothesis states that there is a difference between the
+#means (difference does not equal zero). The t-test determines a p-value of
+#0.0004036 for BSI scores and 0.001876 for Sig scores. For BSI score, this means
+#that we reject the null hypothesis and conclude there is a statistically
+#significant difference in mean BSI score and age group. Furthermore, for Sig
+#score, we reject the null hypothesis as well and conclude there is a
+#significant difference in mean Sig score and age group. Lastly, for both cases,
+#the t-test results suggest younger individuals tend to have both higher BSI and
+#Sig scores than older individuals.
+
+#The final test ran was a paired t-test on a hypothetical idea. Instead of
+#having two different groups, a test is ran over a long time where the
+#individuals from the first age group (18-35) are the same individuals in the
+#second age group (65-80). This test is only conducted for the BSI scores. In
+#this case, normality and variance have already been assessed and both
+#assumptions are met (i.e. when running the two-sample independent t-test,
+#normality and variance were met). The only difference in the t.test function is
+#that paired = TRUE instead of FALSE. Additionally, the hypotheses are slightly
+#altered with null hypothesis stating that there is no difference in the
+#paired means and the alternative hypothesis stating there is a difference in
+#the paired means. The p-value of this test is 0.002259, which at the 0.05
+#significance level means that we reject the null hypothesis and conclude that
+#there is a significant difference in the paired means.

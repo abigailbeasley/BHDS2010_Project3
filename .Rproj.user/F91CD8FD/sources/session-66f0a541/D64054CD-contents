@@ -1,0 +1,19 @@
+setwd("C:/Users/colej/OneDrive/Desktop/Statistical Programming for Health Data Science")
+```{r load libraries}
+library(tidyverse)
+library(pastecs)
+
+```
+
+```{r load data}
+texts = read.csv('TextMessages.csv')
+
+```
+
+```{r, clean and restructure data}
+texts$Group <- as.factor(texts$Group)
+
+texts_long <- pivot_longer(texts,
+                           cols = c(Baseline, Six_months),
+                           names_to = 'time',
+                           values_to = 'text_count')

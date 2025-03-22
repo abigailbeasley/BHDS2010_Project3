@@ -1,0 +1,8 @@
+"0","#Creates stratified boxplot of text messages Group and Time (Hint: Faceted box plot)
+#Adding labels, theme, and faceting of time:
+boxplot_texts <- ggplot(texts_long, aes (x = Group, y = text_count, fill = Group)) + geom_boxplot() + labs(title = ""Ditribution of Text Messages by Group and Time"",
+x = ""Group"", y = ""Number of Text Messages"") + scale_x_discrete(labels = c('1' = 'Group', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~time)
+"
+"2","Error in ggplot(texts_long, aes(x = Group, y = text_count, fill = Group)) : 
+  could not find function ""ggplot""
+"
