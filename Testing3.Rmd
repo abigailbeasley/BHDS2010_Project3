@@ -1,0 +1,40 @@
+---
+title: "Testing3"
+author: "Cole Harrris"
+date: "2025-03-22"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+
+---
+title: "Assignment3"
+author: "Cole Harris and Abigail Beasley"
+date: "2025-03-22"
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Creates stratified boxplot of text messages Group and Time (Hint: Faceted box plot)
+#Adding labels, theme, and faceting of time:
+boxplot_texts <- ggplot(texts_long, aes (x = Group, y = text_count, fill = Group)) + 
+  geom_boxplot() + labs(title = "Ditribution of Text Messages by Group and Time",
+                        x = "Group", y = "Number of Text Messages") + scale_x_discrete(labels = 
+                                                                                         c('1' = 'Group', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~time)
+
+
+
+
+#Descriptive statistics for text message by Time and Group:
+desc_stats <- texts_long %>% group_by(time, Group) %>% summarise(statistics = list(round(stat.desc(text_count, basic = TRUE, norm = FALSE), 2)))
+
+```
+
+
+
+
+
+
+```
