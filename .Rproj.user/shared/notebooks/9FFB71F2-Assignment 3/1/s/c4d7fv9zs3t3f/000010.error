@@ -1,1 +1,0 @@
-{"frames":[],"message":"Error in ggplot(texts_long, aes(x = Group, y = text_count, fill = Group)) : \n  could not find function \"ggplot\"\n"}
