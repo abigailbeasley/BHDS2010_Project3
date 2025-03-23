@@ -34,7 +34,7 @@ scale_x_discrete(labels = c('1' = 'Group', '2' = 'Group 2')) + theme_minimal() +
 #Descriptive statistics for text message by Time and Group:
 desc_stats <- texts_long %>% group_by(time, Group) %>% summarise(statistics = list(round(stat.desc(text_count, basic = TRUE, norm = FALSE), 2)))
 #Results of the data
-
+print(desc_stats)
 
 
 ```
