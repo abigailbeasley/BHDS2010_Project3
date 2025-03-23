@@ -17,26 +17,74 @@ output: pdf_document
   ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+setwd("C:/Users/colej/OneDrive/Desktop/Statistical Programming for Health Data Science")
+#The following code will match what is in the current repository, but necessary
+#to ensure the boxplot and summary stats are functioning correctly:
+
+
 #Installing and loading used packages:
-#install.packages(pastecs)
-#install.packages(ggplot2)
+install.packages("pastecs")
+install.packages("ggplot2")
+install.packages("tidyverse")
 
 library(pastecs)
 library(ggplot2) 
+library(tidyr)
+library(dplyr)
+
+#Reading in the data:
+texts = read.csv("TextMessages.csv")
+
+#Switching Group into a factor to run summary statistics and create plots:
+texts$Group <- as.factor(texts$Group)
+
+#Confirming that Group is now factors:
+is.factor(texts$Group)
+#Output is true.
+
+#To match the already typed code, restructing the data:
+texts_long <- pivot_longer(texts,
+                           cols = c(Baseline, Six_months),
+                           names_to = "Time",
+                           values_to = "text_count")
+
+#Ensuring that Time will be convert to a factor:
+texts_long$Time <- as.factor(texts_long$Time)
+
+#Verifying Time has now become a factor:
+is.factor((texts_long$Time))
 
 #Creates stratified boxplot of text messages Group and Time (Hint: Faceted box plot)
 #Adding labels, theme, and faceting of time:
-boxplot_texts <- ggplot(texts_long, aes (x = Group, y = text_count, fill = Group)) + geom_boxplot() + labs(title = "Ditribution of Text Messages by Group and Time", x = "Group", y = "Number of Text Messages") + 
-scale_x_discrete(labels = c('1' = 'Group', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~time)
+boxplot_texts <- ggplot(texts_long, aes (x = Group, y = text_count, fill = 
+  Group)) + geom_boxplot() + labs(title = 
+  "Distribution of Text Messages by Group and Time", x = "Group", y = 
+  "Number of Text Messages") + scale_x_discrete(labels = 
+  c('1' = 'Group', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~Time)
+
+print(boxplot_texts)
 #Interpretation of the ggplot
 
 
+#Ensuring text_count is numeric:
+texts_long$text_count <- as.numeric(texts_long$text_count)
+
+is.numeric(texts_long$text_count)
+#Text_count is now numeric.
+
 #Descriptive statistics for text message by Time and Group:
-desc_stats <- texts_long %>% group_by(time, Group) %>% summarise(statistics = list(round(stat.desc(text_count, basic = TRUE, norm = FALSE), 2)))
+desc_stats <- texts_long %>% group_by(Time, Group) %>% 
+summarise(statistics = list(round(stat.desc(text_count, basic = 
+TRUE, norm = FALSE), 2))) %>% unnest_wider(statistics) %>% 
+  select(Time, Group, mean, median, std.dev, min, max)
+
+#Convert to data frame to remove <fct> and <dbl> notations:
+desc_stats<- as.data.frame(desc_stats)
+
 #Results of the data
 print(desc_stats)
 
-
+#Interpretation of results:
 ```
 
 
