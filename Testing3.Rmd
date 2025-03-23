@@ -22,6 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages(ggplot2)
 
 library(pastecs)
+library(ggplot2)
 
 #Creates stratified boxplot of text messages Group and Time (Hint: Faceted box plot)
 #Adding labels, theme, and faceting of time:
