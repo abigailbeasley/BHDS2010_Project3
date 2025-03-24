@@ -73,10 +73,10 @@ is.numeric(texts_long$text_count)
 #It is numeric.
 
 #Descriptive statistics for text message by Time and Group:
-desc_stats <- texts_long %>% group_by(Time, Group) %>% 
+desc_stats <- texts_long %>% group_by(time, Group) %>% 
 summarise(statistics = list(round(stat.desc(text_count, basic = 
 TRUE, norm = FALSE), 2))) %>% unnest_wider(statistics) %>% 
-  select(Time, Group, mean, median, std.dev, min, max)
+  select(time, Group, mean, median, std.dev, min, max)
 
 #Convert to data frame to remove <fct> and <dbl> notations:
 desc_stats<- as.data.frame(desc_stats)
