@@ -1,0 +1,55 @@
+---
+title: "Assignment 3"
+author: "Abigail Beasley & Cole Harris"
+date: "2025-03-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load libraries}
+library(tidyverse)
+library(pastecs)
+
+```
+
+```{r load data}
+texts = read.csv('TextMessages.csv')
+
+```
+
+```{r, clean and restructure data}
+texts$Group <- as.factor(texts$Group)
+
+texts_long <- pivot_longer(texts,
+                           cols = c(Baseline, Six_months),
+                           names_to = 'time',
+                           values_to = 'text_count')
+```
+
+```{r plot 1}
+
+```
+
+```{r plot 2}
+# Creates stratified bar charts of text messages Group and Time (Hint: Faceted Bar Charts).
+baseline_barchart <- ggplot(texts_long, aes(x=Group, y=text_count)) +
+  # adding bar that sums total texts for each group
+  geom_bar(stat = "summary", fun = "sum", fill ='orange',color='black') +
+  # adding labels
+  labs(title='Text totals by Group and Time', y='Total Texts', x='Group') +
+  # renaming x-axis labels for clarity
+  scale_x_discrete(labels = c('1'= 'Group 1', '2' = 'Group 2')) +
+  # adding a theme 
+  theme_classic() +
+  # splitting into two sets of bar charts based on time factor
+  facet_wrap(~time)
+
+baseline_barchart
+```
+
+```{r descriptive stats}
+
+```
