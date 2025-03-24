@@ -1,0 +1,90 @@
+---
+title: "Assignment 3"
+author: "Abigail Beasley & Cole Harris"
+date: "2025-03-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load libraries}
+#install.packages("pastecs")
+#install.packages("ggplot2")
+#install.packages("tidyverse")
+
+
+library(tidyverse)
+library(pastecs)
+library(dplyr)
+library(ggplot2) 
+```
+
+```{r load data}
+texts = read.csv('TextMessages.csv')
+
+```
+
+```{r, clean and restructure data}
+texts$Group <- as.factor(texts$Group)
+
+texts_long <- pivot_longer(texts,
+                           cols = c(Baseline, Six_months),
+                           names_to = 'time',
+                           values_to = 'text_count')
+```
+
+```{r plot 1}
+#Creates stratified boxplot of text messages Group and Time (Hint: Faceted box plot)
+#Adding labels, theme, and faceting of time:
+boxplot_texts <- ggplot(texts_long, aes (x = Group, y = text_count, fill = 
+  Group)) + geom_boxplot() + labs(title = 
+  "Distribution of Text Messages by Group and Time", x = "Group", y = 
+  "Number of Text Messages") + scale_x_discrete(labels = 
+  c('1' = 'Group', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~Time)
+
+print(boxplot_texts)
+#Interpretation of the ggplot
+
+
+```
+
+```{r plot 2}
+# Creates stratified bar charts of text messages Group and Time (Hint: Faceted Bar Charts).
+baseline_barchart <- ggplot(texts_long, aes(x=Group, y=text_count)) +
+  # adding bar that sums total texts for each group
+  geom_bar(stat = "summary", fun = "sum", fill ='orange',color='black') +
+  # adding labels
+  labs(title='Text totals by Group and Time', y='Total Texts', x='Group') +
+  # renaming x-axis labels for clarity
+  scale_x_discrete(labels = c('1'= 'Group 1', '2' = 'Group 2')) +
+  # adding a theme 
+  theme_classic() +
+  # splitting into two sets of bar charts based on time factor
+  facet_wrap(~time)
+
+baseline_barchart
+```
+
+```{r descriptive stats}
+#Ensuring text_count is numeric:
+is.numeric(texts_long$text_count)
+#It is numeric.
+
+#Descriptive statistics for text message by Time and Group:
+desc_stats <- texts_long %>% group_by(Time, Group) %>% 
+summarise(statistics = list(round(stat.desc(text_count, basic = 
+TRUE, norm = FALSE), 2))) %>% unnest_wider(statistics) %>% 
+  select(Time, Group, mean, median, std.dev, min, max)
+
+#Convert to data frame to remove <fct> and <dbl> notations:
+desc_stats<- as.data.frame(desc_stats)
+
+#Results of the data
+print(desc_stats)
+
+#Interpretation of results:
+
+
+```
