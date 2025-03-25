@@ -42,11 +42,24 @@ boxplot_texts <- ggplot(texts_long, aes (x = Group, y = text_count, fill =
   Group)) + geom_boxplot() + labs(title = 
   "Distribution of Text Messages by Group and Time", x = "Group", y = 
   "Number of Text Messages") + scale_x_discrete(labels = 
-  c('1' = 'Group', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~Time)
+  c('1' = 'Group 1', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~time)
 
 print(boxplot_texts)
 #Interpretation of the ggplot
-
+#Beginning at the Baseline data, both groups show a similar distribution of text
+#messages. The median values are close with Group 2 having a slightly higher
+#median, but there is no obvious significant different in central tendency. The
+#IQR is similar, suggesting similar spread amongst the central 50% of the data
+#and there are no clear outliers for either group. Moving to the Six Months
+#comparison, both groups show a decrease in the median number of text messages
+#with Group 2 still have a larger median. The difference in medians has
+#significantly increase compared to Baseline. In terms of spread, Group 1
+#appears to have a larger IQR with the central 50% if the data being more spread
+#out compared to Group 2. There are several outliers within Group 1 and only two
+#outliers in Group 2. Based on these observations, it appears that at Baseline,
+#both distributions are relatively symmetrical but become more variable over
+#time with both distributions becoming left-skewed. However, the variability
+#differs with Group 1 appearing to show the most variation over time. 
 
 ```
 
