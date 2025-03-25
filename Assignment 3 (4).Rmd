@@ -52,14 +52,14 @@ print(boxplot_texts)
 #IQR is similar, suggesting similar spread amongst the central 50% of the data
 #and there are no clear outliers for either group. Moving to the Six Months
 #comparison, both groups show a decrease in the median number of text messages
-#with Group 2 still have a larger median. The difference in medians has
+#with Group 2 still having a larger median. The difference between medians has
 #significantly increase compared to Baseline. In terms of spread, Group 1
 #appears to have a larger IQR with the central 50% if the data being more spread
 #out compared to Group 2. There are several outliers within Group 1 and only two
 #outliers in Group 2. Based on these observations, it appears that at Baseline,
-#both distributions are relatively symmetrical but become more variable over
-#time with both distributions becoming left-skewed. However, the variability
-#differs with Group 1 appearing to show the most variation over time. 
+#both distributions are relatively symmetrical but Group 1 becomes more variable
+#and asymmetrical with time. However, Group 2 maintains symmetry and has values
+#only slightly decrease when forwarding to the Six Months category.
 
 ```
 
@@ -98,6 +98,31 @@ desc_stats<- as.data.frame(desc_stats)
 print(desc_stats)
 
 #Interpretation of results:
-
+#Starting with Group 1 under Baseline, the most notable statistics are the mean
+#and median. These values are 64.84 for mean and 64 for median, implying that
+#the data for Group 1 under Baseline is symmetrically distributed. There is
+#moderate variation in the text message data as the standard deviation is 10.68,
+#meaning most individuals sent approximately 65 texts with some deviating by
+#approximately 11 texts. Lastly, the highest value was 85 and the lowest was 47
+#showing a wide range of scores. Moving to Group 2 under Baseline, the mean is
+#slightly higher than Group 1 at 65.60 with the median outputting at 65,
+#suggesting that this data is also symmetrically distributed. Similar to Group
+#1, the standard deviation is 10.84, indicating that there is moderate spread
+#within the data. The minimum and maximum are slightly higher with scores
+#ranging from 89 to 46.
+#Forwarding to the groups under Six Months, for Group 1, the mean has decreased
+#from 64.84 to 52.96. Furthermore, the median has also decreased from 64 to 58.
+#Therefore, the data is no longer symmetrical and has become left-skewed. The
+#standard deviation has increased from 10.68  to 16.33, which means that the data
+#has become substantially more varied. Additionally, the range has widen with
+#values starting at 9 and ending at 78, suggesting numerous outliers. Similar,
+#Group 2 has a decrease in mean and median, but not as severe as Group 1. Under
+#the Six Months category, the mean and median for Group 2 have been decreased to
+#61.84 and 62. Based on these values, it appears that the data has maintained
+#symmetry. Interestingly, the standard deviation has decreased from 10.84 to
+#9.41, indicating that the data is less varied and participants in Group 2 were
+#more consistent with texting over time. Lastly, the minimum and maximum values
+#have changed to 46 and 79, demonstrating values similar to Baseline and showing
+#stable texting habits.
 
 ```
