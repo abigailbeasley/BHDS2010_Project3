@@ -10,11 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r load libraries}
-#install.packages("pastecs")
-#install.packages("ggplot2")
-#install.packages("tidyverse")
-
-
 library(tidyverse)
 library(pastecs)
 library(dplyr)
@@ -22,13 +17,17 @@ library(ggplot2)
 ```
 
 ```{r load data}
+# loading in text messages
 texts = read.csv('TextMessages.csv')
 
 ```
 
 ```{r, clean and restructure data}
+# converting Group to a factor 
 texts$Group <- as.factor(texts$Group)
 
+# converting data to long format
+# baseline, six_months columns become values of 'time' variable
 texts_long <- pivot_longer(texts,
                            cols = c(Baseline, Six_months),
                            names_to = 'time',
@@ -42,7 +41,7 @@ boxplot_texts <- ggplot(texts_long, aes (x = Group, y = text_count, fill =
   Group)) + geom_boxplot() + labs(title = 
   "Distribution of Text Messages by Group and Time", x = "Group", y = 
   "Number of Text Messages") + scale_x_discrete(labels = 
-  c('1' = 'Group 1', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~time)
+  c('1' = 'Group', '2' = 'Group 2')) + theme_minimal() + facet_wrap(~time)
 
 print(boxplot_texts)
 #Interpretation of the ggplot
@@ -79,6 +78,10 @@ baseline_barchart <- ggplot(texts_long, aes(x=Group, y=text_count)) +
 
 baseline_barchart
 ```
+
+From the plot above, we can see that group 1 and group 2 had a similar baseline
+number of text messages, but at the six month mark there was a decrease which
+was substantially more stark in Group 1.
 
 ```{r descriptive stats}
 #Ensuring text_count is numeric:
